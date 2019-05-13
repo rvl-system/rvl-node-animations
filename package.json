@@ -1,0 +1,32 @@
+{
+  "name": "rvl-node-animations",
+  "version": "1.0.0",
+  "description": "A set of helper methods to create animations for RVL-Node",
+  "main": "dist/index.js",
+  "types": "declarations/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "tslint -p tsconfig.json",
+    "build": "tsc --build tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nebrius/rvl-node-animations.git"
+  },
+  "author": "Bryan Hughes <bryan@nebri.us>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/nebrius/rvl-node-animations/issues"
+  },
+  "homepage": "https://github.com/nebrius/rvl-node-animations#readme",
+  "devDependencies": {
+    "@types/clone-deep": "^4.0.1",
+    "@types/node": "^12.0.1",
+    "rvl-node": "^1.0.2",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "clone-deep": "^4.0.1"
+  }
+}
