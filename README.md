@@ -7,11 +7,18 @@ Documentation coming soon!
 ## Usage
 
 ```typescript
-import { createWaveParameters, createSolidColorWave, createColorCycleWave } from 'rvl-node-animations';
+import {
+  createWaveParameters,
+  createSolidColorWave,
+  createColorCycleWave
+} from 'rvl-node-animations';
 
 const myWaveParameters = createWaveParameters(
-  createSolidColorWave(128, 255, 255, 128), // Create a solid-cyan, half-way transparent color
-  createColorCycleWave(2, 255) // Create a fully opaque, relatively slow color cycle that will show throw the cyan
+   // Create a solid-cyan, half-way transparent color
+  createSolidColorWave(128, 255, 255, 128),
+
+  // Create a fully opaque, slow color cycle that will show throw the cyan wave
+  createColorCycleWave(2, 255)
 );
 ```
 
