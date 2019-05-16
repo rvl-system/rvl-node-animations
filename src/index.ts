@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Node Animations.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IWaveParameters, IWave } from 'rvl-node';
+import { IWaveParameters, IWave } from 'rvl-node-types';
 import clone from 'clone-deep';
 
 const EMPTY_WAVE: IWave = {
