@@ -97,8 +97,8 @@ export function createPulsingWave(h: number, s: number, rate: number): IWave {
   const wave = createEmptyWave();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
-  wave.v.a = 255;
-  wave.v.w_t = Math.round(rate);
-  wave.a.b = 255;
+  wave.v.b = 255;
+  wave.a.w_t = Math.round(rate);
+  wave.a.a = 255;
   return wave;
 }
