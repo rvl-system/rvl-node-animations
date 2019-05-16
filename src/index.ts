@@ -42,19 +42,18 @@ export function createWaveParameters(wave1?: IWave, wave2?: IWave, wave3?: IWave
   };
 }
 
+function validateNum(num: number, min: number, max: number, name: string): void {
+  if (typeof num !== 'number' || num < min || num > max) {
+    throw new Error(`Invalid ${name} ${num}. ` +
+      `${name[0].toUpperCase() + name.substring(1)} must be a number between ${min} and ${max}`);
+  }
+}
+
 export function createSolidColorWave(h: number, s: number, v: number, a: number): IWave {
-  if (typeof h !== 'number' || h < 0 || h > 255) {
-    throw new Error(`Invalid hue ${h}. Hue must be a number between 0 and 255`);
-  }
-  if (typeof s !== 'number' || s < 0 || s > 255) {
-    throw new Error(`Invalid saturation ${s}. Saturation must be a number between 0 and 255`);
-  }
-  if (typeof v !== 'number' || v < 0 || v > 255) {
-    throw new Error(`Invalid value ${v}. Value must be a number between 0 and 255`);
-  }
-  if (typeof a !== 'number' || a < 0 || a > 255) {
-    throw new Error(`Invalid alpha ${a}. Alpha must be a number between 0 and 255`);
-  }
+  validateNum(h, 0, 255, 'hue');
+  validateNum(s, 0, 255, 'saturation');
+  validateNum(v, 0, 255, 'value');
+  validateNum(a, 0, 255, 'alpha');
   const wave = createEmptyWave();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
@@ -63,13 +62,9 @@ export function createSolidColorWave(h: number, s: number, v: number, a: number)
   return wave;
 }
 
-export function createColorCycleWave(rate: number, a: number) {
-  if (typeof rate !== 'number' || rate < 1 || rate > 32) {
-    throw new Error(`Invalid rate ${rate}. Rate must be a number between 1 and 32`);
-  }
-  if (typeof a !== 'number' || a < 0 || a > 255) {
-    throw new Error(`Invalid alpha ${a}. Alpha must be a number between 0 and 255`);
-  }
+export function createColorCycleWave(rate: number, a: number): IWave {
+  validateNum(rate, 1, 32, 'rate');
+  validateNum(a, 0, 255, 'alpha');
   const wave = createEmptyWave();
   wave.h.a = 255;
   wave.h.w_t = Math.round(rate);
@@ -77,5 +72,33 @@ export function createColorCycleWave(rate: number, a: number) {
   wave.s.b = 255;
   wave.v.b = 255;
   wave.a.b = Math.round(a);
+  return wave;
+}
+
+export function createMovingWave(h: number, s: number, rate: number, spacing: number): IWave {
+  validateNum(rate, 1, 32, 'rate');
+  validateNum(spacing, 1, 16, 'spacing');
+  validateNum(h, 0, 255, 'hue');
+  validateNum(s, 0, 255, 'saturation');
+  const wave = createEmptyWave();
+  wave.h.b = Math.round(h);
+  wave.s.b = Math.round(s);
+  wave.v.b = 255;
+  wave.a.a = 255;
+  wave.a.w_t = Math.round(rate);
+  wave.a.w_x = Math.round(spacing);
+  return wave;
+}
+
+export function createPulsingWave(h: number, s: number, rate: number): IWave {
+  validateNum(rate, 1, 32, 'rate');
+  validateNum(h, 0, 255, 'hue');
+  validateNum(s, 0, 255, 'saturation');
+  const wave = createEmptyWave();
+  wave.h.b = Math.round(h);
+  wave.s.b = Math.round(s);
+  wave.v.a = 255;
+  wave.v.w_t = Math.round(rate);
+  wave.a.b = 255;
   return wave;
 }
