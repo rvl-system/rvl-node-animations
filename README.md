@@ -47,22 +47,6 @@ If you're using TypeScript, you don't need to install separate `@types` type def
 
 All waves are defined in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) that has been mapped to 8-bit integers. Please familiarize yourself with the HSV color space before using this library.
 
-## Background
-
-Note: you do not need to know this information to use this library at all. Some might find it interesting though.
-
- RVL-Node uses a rendering engine based on sin waves. RVL-Node layers four waves on top of each other to create interesting and aesthetically pleasing LED animations. Think of this like CSS layers. They can include transparency to create a layering effect.
-
-All waves are defined in the HSV color space that has been mapped to 8-bit integers. A hue of 180 degrees is represented by the value `128`, a saturation of 25% is represented by the value `64`, and so on and so forth.
-
-A wave is defined using the following mathematical formula:
-
-```
-ledChannelValue(t, x) = a * sin(w_t * t + w_x * x + phi) + b
-```
-
-This function takes 5 variables from the user (a, w_x, w_t, phi, b), and 2 from the engine (x, t). This allows someone to create a wave that can vary over time, over the length of the LED strip, can be constant, or any of the above.
-
 ## API
 
 Note: API signatures are declared using [TypeScript syntax](https://www.typescriptlang.org/). This provides a concise, formal definition for all signatures in a syntax that is familiar to at least some developers.
@@ -305,6 +289,22 @@ _Arguments:_
 </table>
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
+
+## Background
+
+Note: you do not need to know this information to use this library at all. Some might find it interesting though.
+
+ RVL-Node uses a rendering engine based on sin waves. RVL-Node layers four waves on top of each other to create interesting and aesthetically pleasing LED animations. Think of this like CSS layers. They can include transparency to create a layering effect.
+
+All waves are defined in the HSV color space that has been mapped to 8-bit integers. A hue of 180 degrees is represented by the value `128`, a saturation of 25% is represented by the value `64`, and so on and so forth.
+
+A wave is defined using the following mathematical formula:
+
+```
+ledChannelValue(t, x) = a * sin(w_t * t + w_x * x + phi) + b
+```
+
+This function takes 5 variables from the user (a, w_x, w_t, phi, b), and 2 from the engine (x, t). This allows someone to create a wave that can vary over time, over the length of the LED strip, can be constant, or any of the above. Each channel (hue, saturation, value, and alpha) have their own wave assigned to them. 4 channels per layer, times 4 layers, means 80 coefficients total!
 
 # License
 
