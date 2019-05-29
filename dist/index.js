@@ -76,7 +76,7 @@ function createColorCycleWave(rate, a) {
 }
 exports.createColorCycleWave = createColorCycleWave;
 function createMovingWave(h, s, rate, spacing) {
-    validateNum(rate, 1, 32, 'rate');
+    validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');

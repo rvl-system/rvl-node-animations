@@ -76,7 +76,7 @@ export function createColorCycleWave(rate: number, a: number): IWave {
 }
 
 export function createMovingWave(h: number, s: number, rate: number, spacing: number): IWave {
-  validateNum(rate, 1, 32, 'rate');
+  validateNum(rate, 0, 32, 'rate');
   validateNum(spacing, 1, 16, 'spacing');
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');

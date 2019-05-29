@@ -1,6 +1,6 @@
 {
   "name": "rvl-node-animations",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A set of helper methods to create animations for RVL-Node",
   "main": "dist/index.js",
   "types": "declarations/index.d.ts",
