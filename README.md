@@ -16,6 +16,26 @@ npm install rvl-node-animations
 
 ## Usage
 
+Basic usage:
+
+```typescript
+import {
+  createWaveParameters,
+  createSolidColorWave,
+  createColorCycleWave
+} from 'rvl-node-animations';
+
+const waveParameters = createWaveParameters(
+  // Create a solid-cyan, half-way transparent color
+  createSolidColorWave(128, 255, 255, 128),
+
+  // Create a fully opaque, slow color cycle that will show throw the cyan wave
+  createColorCycleWave(2, 255)
+);
+```
+
+If you intend to create these animations on the same device that will be controller LEDs, here is an example integrating rvl-node-animations and rvl-node:
+
 ```typescript
 import {
   createWaveParameters,
