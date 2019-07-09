@@ -307,7 +307,7 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createRainbowWave(rate, a)
+### createRainbowWave(a, rate)
 
 This method creates a wave that looks like a rainbow, and slowly moves.
 
