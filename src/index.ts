@@ -49,20 +49,21 @@ function validateNum(num: number, min: number, max: number, name: string): void 
   }
 }
 
-export function createSolidColorWave(h: number, s: number, v: number, a: number): IWave {
+export function createSolidColorWave(brightness: number, h: number, s: number, a: number): IWave {
+  validateNum(brightness, 0, 255, 'brightness');
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');
-  validateNum(v, 0, 255, 'value');
   validateNum(a, 0, 255, 'alpha');
   const wave = createEmptyWave();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
-  wave.v.b = Math.round(v);
+  wave.v.b = Math.round(brightness);
   wave.a.b = Math.round(a);
   return wave;
 }
 
-export function createColorCycleWave(rate: number, a: number): IWave {
+export function createColorCycleWave(brightness: number, rate: number, a: number): IWave {
+  validateNum(brightness, 0, 255, 'brightness');
   validateNum(rate, 1, 32, 'rate');
   validateNum(a, 0, 255, 'alpha');
   const wave = createEmptyWave();
@@ -70,12 +71,13 @@ export function createColorCycleWave(rate: number, a: number): IWave {
   wave.h.w_t = Math.round(rate);
   wave.h.w_x = 0;
   wave.s.b = 255;
-  wave.v.b = 255;
+  wave.v.b = Math.round(brightness);
   wave.a.b = Math.round(a);
   return wave;
 }
 
-export function createMovingWave(h: number, s: number, rate: number, spacing: number): IWave {
+export function createMovingWave(brightness: number, h: number, s: number, rate: number, spacing: number): IWave {
+  validateNum(brightness, 0, 255, 'brightness');
   validateNum(rate, 0, 32, 'rate');
   validateNum(spacing, 1, 16, 'spacing');
   validateNum(h, 0, 255, 'hue');
@@ -83,22 +85,38 @@ export function createMovingWave(h: number, s: number, rate: number, spacing: nu
   const wave = createEmptyWave();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
-  wave.v.b = 255;
+  wave.v.b = Math.round(brightness);
   wave.a.a = 255;
   wave.a.w_t = Math.round(rate);
   wave.a.w_x = Math.round(spacing);
   return wave;
 }
 
-export function createPulsingWave(h: number, s: number, rate: number): IWave {
+export function createPulsingWave(brightness: number, h: number, s: number, rate: number): IWave {
+  validateNum(brightness, 0, 255, 'brightness');
   validateNum(rate, 1, 32, 'rate');
   validateNum(h, 0, 255, 'hue');
   validateNum(s, 0, 255, 'saturation');
   const wave = createEmptyWave();
   wave.h.b = Math.round(h);
   wave.s.b = Math.round(s);
-  wave.v.b = 255;
+  wave.v.b = Math.round(brightness);
   wave.a.w_t = Math.round(rate);
   wave.a.a = 255;
+  return wave;
+}
+
+export function createRainbowWave(brightness: number, a: number, rate: number): IWave {
+  validateNum(brightness, 0, 255, 'brightness');
+  validateNum(rate, 1, 32, 'rate');
+  validateNum(a, 0, 255, 'alpha');
+  const wave = createEmptyWave();
+
+  wave.h.a = 255;
+  wave.h.w_t = Math.round(rate);
+  wave.h.w_x = 2;
+  wave.s.b = 255;
+  wave.v.b = Math.round(brightness);
+  wave.a.b = Math.round(a);
   return wave;
 }

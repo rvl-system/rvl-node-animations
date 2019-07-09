@@ -49,20 +49,21 @@ function validateNum(num, min, max, name) {
             `${name[0].toUpperCase() + name.substring(1)} must be a number between ${min} and ${max}`);
     }
 }
-function createSolidColorWave(h, s, v, a) {
+function createSolidColorWave(brightness, h, s, a) {
+    validateNum(brightness, 0, 255, 'brightness');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
-    validateNum(v, 0, 255, 'value');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
     wave.h.b = Math.round(h);
     wave.s.b = Math.round(s);
-    wave.v.b = Math.round(v);
+    wave.v.b = Math.round(brightness);
     wave.a.b = Math.round(a);
     return wave;
 }
 exports.createSolidColorWave = createSolidColorWave;
-function createColorCycleWave(rate, a) {
+function createColorCycleWave(brightness, rate, a) {
+    validateNum(brightness, 0, 255, 'brightness');
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
@@ -70,12 +71,13 @@ function createColorCycleWave(rate, a) {
     wave.h.w_t = Math.round(rate);
     wave.h.w_x = 0;
     wave.s.b = 255;
-    wave.v.b = 255;
+    wave.v.b = Math.round(brightness);
     wave.a.b = Math.round(a);
     return wave;
 }
 exports.createColorCycleWave = createColorCycleWave;
-function createMovingWave(h, s, rate, spacing) {
+function createMovingWave(brightness, h, s, rate, spacing) {
+    validateNum(brightness, 0, 255, 'brightness');
     validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');
@@ -83,24 +85,39 @@ function createMovingWave(h, s, rate, spacing) {
     const wave = createEmptyWave();
     wave.h.b = Math.round(h);
     wave.s.b = Math.round(s);
-    wave.v.b = 255;
+    wave.v.b = Math.round(brightness);
     wave.a.a = 255;
     wave.a.w_t = Math.round(rate);
     wave.a.w_x = Math.round(spacing);
     return wave;
 }
 exports.createMovingWave = createMovingWave;
-function createPulsingWave(h, s, rate) {
+function createPulsingWave(brightness, h, s, rate) {
+    validateNum(brightness, 0, 255, 'brightness');
     validateNum(rate, 1, 32, 'rate');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
     const wave = createEmptyWave();
     wave.h.b = Math.round(h);
     wave.s.b = Math.round(s);
-    wave.v.b = 255;
+    wave.v.b = Math.round(brightness);
     wave.a.w_t = Math.round(rate);
     wave.a.a = 255;
     return wave;
 }
 exports.createPulsingWave = createPulsingWave;
+function createRainbowWave(brightness, a, rate) {
+    validateNum(brightness, 0, 255, 'brightness');
+    validateNum(rate, 1, 32, 'rate');
+    validateNum(a, 0, 255, 'alpha');
+    const wave = createEmptyWave();
+    wave.h.a = 255;
+    wave.h.w_t = Math.round(rate);
+    wave.h.w_x = 2;
+    wave.s.b = 255;
+    wave.v.b = Math.round(brightness);
+    wave.a.b = Math.round(a);
+    return wave;
+}
+exports.createRainbowWave = createRainbowWave;
 //# sourceMappingURL=index.js.map
