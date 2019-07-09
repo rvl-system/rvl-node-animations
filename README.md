@@ -27,10 +27,10 @@ import {
 
 const waveParameters = createWaveParameters(
   // Create a solid-cyan, half-way transparent color
-  createSolidColorWave(255, 128, 255, 128),
+  createSolidColorWave(128, 255, 128),
 
   // Create a fully opaque, slow color cycle that will show throw the cyan wave
-  createColorCycleWave(255, 2, 255)
+  createColorCycleWave(2, 255)
 );
 ```
 
@@ -53,10 +53,10 @@ const rvl = new RVL({
 rvl.on('initialized', () => {
   rvl.setWaveParameters(createWaveParameters(
     // Create a solid-cyan, half-way transparent color
-    createSolidColorWave(255, 128, 255, 128),
+    createSolidColorWave(128, 255, 128),
 
     // Create a fully opaque, slow color cycle that will show throw the cyan wave
-    createColorCycleWave(255, 2, 255)
+    createColorCycleWave(2, 255)
   ));
 });
 ```
@@ -136,14 +136,14 @@ _Arguments:_ none
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createSolidColorWave(brightness, h, s, a)
+### createSolidColorWave(h, s, a)
 
 This method creates a solid color wave that does not change over distance or time.
 
 _Signature:_
 
 ```typescript
-function createSolidColorWave(brightness: number, h: number, s: number, a: number): IWave
+function createSolidColorWave(h: number, s: number, a: number): IWave
 ```
 
 _Arguments:_
@@ -157,11 +157,6 @@ _Arguments:_
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>brightness</td>
-      <td>number</td>
-      <td>The brightness of the wave, mapped to between 0 (0%) and 255 (100%).</td>
-    </tr>
     <tr>
       <td>h</td>
       <td>number</td>
@@ -182,7 +177,7 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createColorCycleWave(brightness, rate, a)
+### createColorCycleWave(rate, a)
 
 This method creates a wave that cycles through colors over time.
 
@@ -191,7 +186,7 @@ From a technical perspective, it linearly varies the hue over time while keeping
 _Signature:_
 
 ```typescript
-function createColorCycleWave(brightness: number, rate: number, a: number): IWave
+function createColorCycleWave(rate: number, a: number): IWave
 ```
 
 _Arguments:_
@@ -205,11 +200,6 @@ _Arguments:_
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>brightness</td>
-      <td>number</td>
-      <td>The brightness of the wave, mapped to between 0 (0%) and 255 (100%).</td>
-    </tr>
     <tr>
       <td>rate</td>
       <td>number</td>
@@ -225,7 +215,7 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createMovingWave(brightness, h, s, rate, spacing)
+### createMovingWave(h, s, rate, spacing)
 
 This method creates a moving wave, with the alpha varying between 0% and 100% over distance, creating a "roving wave" effect.
 
@@ -234,7 +224,7 @@ From a technical perspective, it varies the alpha over distance, and varies the 
 _Signature:_
 
 ```typescript
-function createMovingWave(brightness: number, h: number, s: number, rate: number, spacing: number): IWave
+function createMovingWave(h: number, s: number, rate: number, spacing: number): IWave
 ```
 
 _Arguments:_
@@ -248,11 +238,6 @@ _Arguments:_
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>brightness</td>
-      <td>number</td>
-      <td>The brightness of the wave, mapped to between 0 (0%) and 255 (100%).</td>
-    </tr>
     <tr>
       <td>h</td>
       <td>number</td>
@@ -278,7 +263,7 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createPulsingWave(brightness, h, s, rate)
+### createPulsingWave(h, s, rate)
 
 This method creates a wave that pulses, aka it varies from fully transparent to fully opaque over time.
 
@@ -287,7 +272,7 @@ From a technical perspective, it varies the alpha over time with nothing else th
 _Signature:_
 
 ```typescript
-function createPulsingWave(brightness: number, h: number, s: number, rate: number): IWave
+function createPulsingWave(h: number, s: number, rate: number): IWave
 ```
 
 _Arguments:_
@@ -302,11 +287,6 @@ _Arguments:_
   </thead>
   <tbody>
   <tbody>
-    <tr>
-      <td>brightness</td>
-      <td>number</td>
-      <td>The brightness of the wave, mapped to between 0 (0%) and 255 (100%).</td>
-    </tr>
     <tr>
       <td>h</td>
       <td>number</td>
@@ -327,7 +307,7 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### createRainbowWave(brightness, rate, a)
+### createRainbowWave(rate, a)
 
 This method creates a wave that looks like a rainbow, and slowly moves.
 
@@ -336,7 +316,7 @@ From a technical perspective it varies the hue over distance, and varies the y-v
 _Signature:_
 
 ```typescript
-function createRainbowWave(brightness: number, a: number, rate: number): IWave
+function createRainbowWave(a: number, rate: number): IWave
 ```
 
 _Arguments:_
@@ -351,11 +331,6 @@ _Arguments:_
   </thead>
   <tbody>
   <tbody>
-    <tr>
-      <td>brightness</td>
-      <td>number</td>
-      <td>The brightness of the wave, mapped to between 0 (0%) and 255 (100%).</td>
-    </tr>
     <tr>
       <td>a</td>
       <td>number</td>

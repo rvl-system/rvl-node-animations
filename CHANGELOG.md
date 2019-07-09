@@ -1,3 +1,8 @@
+## 3.0.0 (2019-7-9)
+
+- Welp, that was a mistake. Turns out there were some edge cases in v2.0.0 I missed with brightness that caused flickering animations. I can't fix it with the current approach, so I'm taking brightness out for the time being
+- BREAKING CHANGE: removed the `brightness` parameter from all methods.
+
 ## 2.0.0 (2019-7-9)
 
 - BREAKING CHANGE: Modified each method so that it's first argument is `brightness`, between 0 and 255
