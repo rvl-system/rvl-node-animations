@@ -350,7 +350,7 @@ _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https:/
 
 Note: you do not need to know this information to use this library at all. Some might find it interesting though.
 
- RVL-Node uses a rendering engine based on sin waves. RVL-Node layers four waves on top of each other to create interesting and aesthetically pleasing LED animations. Think of this like CSS layers. They can include transparency to create a layering effect.
+RVL Node uses a rendering engine based on sin waves. RVL Node layers four waves on top of each other to create interesting and aesthetically pleasing LED animations. Think of this like CSS layers. They can include transparency to create a layering effect.
 
 All waves are defined in the HSV color space that has been mapped to 8-bit integers. A hue of 180 degrees is represented by the value `128`, a saturation of 25% is represented by the value `64`, and so on and so forth.
 
@@ -362,7 +362,7 @@ ledChannelValue(t, x) = a * sin(w_t * t + w_x * x + phi) + b
 
 This function takes 5 variables from the user (a, w_x, w_t, phi, b), and 2 from the engine (x, t). This allows someone to create a wave that can vary over time, over the length of the LED strip, can be constant, or any of the above. Each channel (hue, saturation, value, and alpha) have their own wave assigned to them. 4 channels per layer, times 4 layers, means 80 coefficients total!
 
-# License
+## License
 
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
