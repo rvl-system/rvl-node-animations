@@ -358,14 +358,14 @@ _Arguments:_
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
-### initRenderer(waveParameters, numWaves, numPixels)
+### initRenderer(waveParameters, numPixels, numWaves)
 
-This method initializes the renderer. Notably, this starts the animation clock.
+This method initializes the renderer and starts the animation clock.
 
 _Signature:_
 
 ```typescript
-function initRenderer(waveParameters: IWaveParameters, numWaves: number, numPixels: number): void
+function initRenderer(waveParameters: IWaveParameters, numPixels: number, numWaves: number = 4): void
 ```
 
 _Arguments:_
