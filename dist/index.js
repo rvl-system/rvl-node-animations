@@ -17,19 +17,124 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Raver Lights Node Animations.  If not, see <http://www.gnu.org/licenses/>.
 */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const clone_deep_1 = __importDefault(require("clone-deep"));
-const EMPTY_WAVE = {
-    h: { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 },
-    s: { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 },
-    v: { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 },
-    a: { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 }
-};
+const EMPTY_CHANNEL = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
+let nWaves = 0;
+let nPixels = 0;
+let startTime = 0;
+let time = 0;
+function initRenderer(numWaves, numPixels) {
+    nWaves = numWaves;
+    nPixels = numPixels;
+    startTime = Date.now();
+}
+exports.initRenderer = initRenderer;
+function resetRendererClock() {
+    startTime = Date.now();
+}
+exports.resetRendererClock = resetRendererClock;
+function getRendererClock() {
+    return time;
+}
+exports.getRendererClock = getRendererClock;
+// Modified from https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+function hsvToRgb(color) {
+    const [h, s, v] = color;
+    let r = 0;
+    let g = 0;
+    let b = 0;
+    const i = Math.floor(h * 6);
+    const f = h * 6 - i;
+    const p = v * (1 - s);
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0:
+            r = v, g = t, b = p;
+            break;
+        case 1:
+            r = q, g = v, b = p;
+            break;
+        case 2:
+            r = p, g = v, b = t;
+            break;
+        case 3:
+            r = p, g = q, b = v;
+            break;
+        case 4:
+            r = t, g = p, b = v;
+            break;
+        case 5:
+            r = v, g = p, b = q;
+            break;
+    }
+    return [r * 255, g * 255, b * 255];
+}
+function calculatePixelValue(waveChannel, t, x) {
+    // Approximate 8-bit sin function from C++
+    const sin = 127.5 * (Math.sin(waveChannel.w_t * t / 100 + waveChannel.w_x * x + waveChannel.phi) + 1);
+    return Math.round(sin * waveChannel.a / 255 + waveChannel.b);
+}
+function renderPixels(waveParameters) {
+    if (!calculatePixelValue) {
+        throw new Error('renderPixels called before init');
+    }
+    const animationClock = Date.now() - startTime;
+    if (!waveParameters.timePeriod) {
+        waveParameters.timePeriod = 255;
+    }
+    if (!waveParameters.distancePeriod) {
+        waveParameters.distancePeriod = 32;
+    }
+    const colors = [];
+    time = animationClock % 25500;
+    for (let i = 0; i < nPixels; i++) {
+        const pixelColorLayers = [];
+        for (let j = 0; j < nWaves; j++) {
+            const x = Math.floor(255 * (i % waveParameters.distancePeriod) / waveParameters.distancePeriod);
+            const wave = waveParameters.waves[j];
+            const pixelColor = hsvToRgb([
+                calculatePixelValue(wave.h, time, x) / 255,
+                calculatePixelValue(wave.s, time, x) / 255,
+                calculatePixelValue(wave.v, time, x) / 255
+            ]);
+            pixelColorLayers[j] = {
+                r: pixelColor[0],
+                g: pixelColor[1],
+                b: pixelColor[2],
+                a: calculatePixelValue(wave.a, time, x)
+            };
+        }
+        colors[i] = pixelColorLayers;
+    }
+    return colors.map((layer) => {
+        const pixel = {
+            r: layer[nWaves - 1].r,
+            g: layer[nWaves - 1].g,
+            b: layer[nWaves - 1].b
+        };
+        function blend(bottom, top, alpha) {
+            alpha = alpha / 255;
+            bottom = bottom / 255;
+            top = alpha * top / 255;
+            return Math.round(255 * (top + bottom * (1 - alpha)));
+        }
+        for (let i = nWaves - 2; i >= 0; i--) {
+            pixel.r = blend(pixel.r, layer[i].r, layer[i].a);
+            pixel.g = blend(pixel.g, layer[i].g, layer[i].a);
+            pixel.b = blend(pixel.b, layer[i].b, layer[i].a);
+        }
+        return pixel;
+    });
+}
+exports.renderPixels = renderPixels;
 function createEmptyWave() {
-    return clone_deep_1.default(EMPTY_WAVE);
+    return {
+        h: { ...EMPTY_CHANNEL },
+        s: { ...EMPTY_CHANNEL },
+        v: { ...EMPTY_CHANNEL },
+        a: { ...EMPTY_CHANNEL }
+    };
 }
 exports.createEmptyWave = createEmptyWave;
 function createWaveParameters(wave1, wave2, wave3, wave4) {

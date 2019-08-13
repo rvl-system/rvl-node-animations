@@ -1,4 +1,13 @@
 import { IWaveParameters, IWave } from 'rvl-node-types';
+export interface IPixel {
+    r: number;
+    g: number;
+    b: number;
+}
+export declare function initRenderer(numWaves: number, numPixels: number): void;
+export declare function resetRendererClock(): void;
+export declare function getRendererClock(): number;
+export declare function renderPixels(waveParameters: IWaveParameters): IPixel[];
 export declare function createEmptyWave(): IWave;
 export declare function createWaveParameters(wave1?: IWave, wave2?: IWave, wave3?: IWave, wave4?: IWave): IWaveParameters;
 export declare function createSolidColorWave(h: number, s: number, a: number): IWave;

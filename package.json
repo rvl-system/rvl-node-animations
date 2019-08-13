@@ -20,13 +20,9 @@
   },
   "homepage": "https://github.com/nebrius/rvl-node-animations#readme",
   "devDependencies": {
-    "@types/clone-deep": "^4.0.1",
-    "@types/node": "^12.0.1",
+    "@types/node": "^12.7.1",
     "rvl-node-types": "^1.0.0",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
-  },
-  "dependencies": {
-    "clone-deep": "^4.0.1"
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
