@@ -1,4 +1,3 @@
-"use strict";
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
@@ -17,26 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Raver Lights Node Animations.  If not, see <http://www.gnu.org/licenses/>.
 */
-Object.defineProperty(exports, "__esModule", { value: true });
 const EMPTY_CHANNEL = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
 let nWaves = 0;
 let nPixels = 0;
 let startTime = 0;
 let time = 0;
-function initRenderer(numWaves, numPixels) {
+let wParameters;
+export function initRenderer(waveParameters, numPixels, numWaves = 4) {
     nWaves = numWaves;
     nPixels = numPixels;
+    wParameters = waveParameters;
     startTime = Date.now();
 }
-exports.initRenderer = initRenderer;
-function resetRendererClock() {
+export function resetRendererClock() {
     startTime = Date.now();
 }
-exports.resetRendererClock = resetRendererClock;
-function getRendererClock() {
+export function getRendererClock() {
     return time;
 }
-exports.getRendererClock = getRendererClock;
 // Modified from https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 function hsvToRgb(color) {
     const [h, s, v] = color;
@@ -72,27 +69,29 @@ function hsvToRgb(color) {
 }
 function calculatePixelValue(waveChannel, t, x) {
     // Approximate 8-bit sin function from C++
-    const sin = 127.5 * (Math.sin(waveChannel.w_t * t / 100 + waveChannel.w_x * x + waveChannel.phi) + 1);
-    return Math.round(sin * waveChannel.a / 255 + waveChannel.b);
+    let sin = 2 * Math.PI * (waveChannel.w_t * t / 100 + waveChannel.w_x * x + waveChannel.phi) / 255;
+    sin = 127.5 * (Math.sin(sin) + 1);
+    sin = Math.round(sin * waveChannel.a / 255 + waveChannel.b);
+    return sin;
 }
-function renderPixels(waveParameters) {
+export function renderPixels() {
     if (!calculatePixelValue) {
         throw new Error('renderPixels called before init');
     }
     const animationClock = Date.now() - startTime;
-    if (!waveParameters.timePeriod) {
-        waveParameters.timePeriod = 255;
+    if (!wParameters.timePeriod) {
+        wParameters.timePeriod = 255;
     }
-    if (!waveParameters.distancePeriod) {
-        waveParameters.distancePeriod = 32;
+    if (!wParameters.distancePeriod) {
+        wParameters.distancePeriod = 32;
     }
     const colors = [];
     time = animationClock % 25500;
     for (let i = 0; i < nPixels; i++) {
         const pixelColorLayers = [];
         for (let j = 0; j < nWaves; j++) {
-            const x = Math.floor(255 * (i % waveParameters.distancePeriod) / waveParameters.distancePeriod);
-            const wave = waveParameters.waves[j];
+            const x = Math.floor(255 * (i % wParameters.distancePeriod) / wParameters.distancePeriod);
+            const wave = wParameters.waves[j];
             const pixelColor = hsvToRgb([
                 calculatePixelValue(wave.h, time, x) / 255,
                 calculatePixelValue(wave.s, time, x) / 255,
@@ -127,8 +126,7 @@ function renderPixels(waveParameters) {
         return pixel;
     });
 }
-exports.renderPixels = renderPixels;
-function createEmptyWave() {
+export function createEmptyWave() {
     return {
         h: { ...EMPTY_CHANNEL },
         s: { ...EMPTY_CHANNEL },
@@ -136,8 +134,7 @@ function createEmptyWave() {
         a: { ...EMPTY_CHANNEL }
     };
 }
-exports.createEmptyWave = createEmptyWave;
-function createWaveParameters(wave1, wave2, wave3, wave4) {
+export function createWaveParameters(wave1, wave2, wave3, wave4) {
     return {
         waves: [
             wave1 || createEmptyWave(),
@@ -147,14 +144,13 @@ function createWaveParameters(wave1, wave2, wave3, wave4) {
         ]
     };
 }
-exports.createWaveParameters = createWaveParameters;
 function validateNum(num, min, max, name) {
     if (typeof num !== 'number' || num < min || num > max) {
         throw new Error(`Invalid ${name} ${num}. ` +
             `${name[0].toUpperCase() + name.substring(1)} must be a number between ${min} and ${max}`);
     }
 }
-function createSolidColorWave(h, s, a) {
+export function createSolidColorWave(h, s, a) {
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
     validateNum(a, 0, 255, 'alpha');
@@ -165,8 +161,7 @@ function createSolidColorWave(h, s, a) {
     wave.a.b = Math.round(a);
     return wave;
 }
-exports.createSolidColorWave = createSolidColorWave;
-function createColorCycleWave(rate, a) {
+export function createColorCycleWave(rate, a) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
@@ -178,8 +173,7 @@ function createColorCycleWave(rate, a) {
     wave.a.b = Math.round(a);
     return wave;
 }
-exports.createColorCycleWave = createColorCycleWave;
-function createMovingWave(h, s, rate, spacing) {
+export function createMovingWave(h, s, rate, spacing) {
     validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');
@@ -193,8 +187,7 @@ function createMovingWave(h, s, rate, spacing) {
     wave.a.w_x = Math.round(spacing);
     return wave;
 }
-exports.createMovingWave = createMovingWave;
-function createPulsingWave(h, s, rate) {
+export function createPulsingWave(h, s, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
@@ -206,8 +199,7 @@ function createPulsingWave(h, s, rate) {
     wave.a.a = 255;
     return wave;
 }
-exports.createPulsingWave = createPulsingWave;
-function createRainbowWave(a, rate) {
+export function createRainbowWave(a, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
@@ -219,5 +211,4 @@ function createRainbowWave(a, rate) {
     wave.a.b = Math.round(a);
     return wave;
 }
-exports.createRainbowWave = createRainbowWave;
 //# sourceMappingURL=index.js.map

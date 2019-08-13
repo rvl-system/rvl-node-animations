@@ -1,10 +1,10 @@
 # RVL-Node Animations
 
-A set of helper methods to create animations for [RVL-Node](https://github.com/nebrius/RVL-Node) and friends.
+A set of helper methods to create and render animations for [RVL-Node](https://github.com/nebrius/RVL-Node) and friends
 
 ## System Requirements
 
-- A supported LTS version of Node.js. This module should work on other versions, but hasn't been tested.
+- Any modern JavaScript engine (web or Node.js)
 
 ## Installation
 
@@ -20,10 +20,15 @@ Basic usage:
 
 ```typescript
 import {
+  initRenderer,
+  renderPixels,
   createWaveParameters,
   createSolidColorWave,
   createColorCycleWave
 } from 'rvl-node-animations';
+
+// Initialize the renderer
+initRenderer();
 
 const waveParameters = createWaveParameters(
   // Create a solid-cyan, half-way transparent color
@@ -32,6 +37,13 @@ const waveParameters = createWaveParameters(
   // Create a fully opaque, slow color cycle that will show throw the cyan wave
   createColorCycleWave(2, 255)
 );
+
+// Render the pixels at 33 frames per second
+setInterval(() => {
+  const pixels = renderPixels(waveParameters);
+  // Display pixels in the browser/an LED strip/etc.
+}, 33);
+
 ```
 
 If you intend to create these animations on the same device that will be controlling the LEDs, here is an example integrating rvl-node-animations and [rvl-node](https://github.com/nebrius/rvl-node):
@@ -65,7 +77,7 @@ rvl.on('initialized', () => {
 
 If you're using TypeScript, you don't need to install separate `@types` type definitions because this package ships with them. To support sharing of interfaces between this module and `rvl-node` itself, I created another module called [rvl-node-types](https://github.com/nebrius/rvl-node-types), which may be of interest to you.
 
-All waves are defined in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) that has been mapped to 8-bit integers (e.g. the hue is 0-255, not 0-360). Please familiarize yourself with the HSV color space before using this library.
+All waves are defined in the [HSV color space](https://en.wikipedia.org/wiki/HSL_and_HSV) that has been mapped to 8-bit integers (e.g. the hue is 0-255, not 0-360, and saturation/value are 0-255, not 0-1 or 0-100). Please familiarize yourself with the HSV color space before using this library.
 
 ## API
 
@@ -120,7 +132,7 @@ _Arguments:_
   </tbody>
 </table>
 
-_Returns:_ an `IWaveParamters` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
+_Returns:_ an `IWaveParameters` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
 
 ### createEmptyWave()
 
@@ -345,6 +357,95 @@ _Arguments:_
 </table>
 
 _Returns:_ an `IWave` instance. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.
+
+### initRenderer(waveParameters, numWaves, numPixels)
+
+This method initializes the renderer. Notably, this starts the animation clock.
+
+_Signature:_
+
+```typescript
+function initRenderer(waveParameters: IWaveParameters, numWaves: number, numPixels: number): void
+```
+
+_Arguments:_
+
+<table>
+  <thead>
+    <tr>
+      <th>Argument</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  <tbody>
+    <tr>
+      <td>waveParameters</td>
+      <td>number</td>
+      <td>An `IWaveParameters` instance describing your animation. Details can be found at [rvl-node-types](https://github.com/nebrius/rvl-node-types), but for all intents and purposes it can be treated as a black box.</td>
+    </tr>
+    <tr>
+      <td>numPixels</td>
+      <td>number</td>
+      <td>The number of pixels to render. For example, if you are sending this to an LED strip, the number of pixels is the number of LEDs in your strip.</td>
+    </tr>
+    <tr>
+      <td>numWaves (optional)</td>
+      <td>number</td>
+      <td>The number of wave layers. Default is 4.</td>
+    </tr>
+  </tbody>
+</table>
+
+_Returns:_ none.
+
+### renderPixels()
+
+Renders the pixels for this exact moment in time based on the parameters set in `initRenderer`.
+
+_Signature:_
+
+```typescript
+interface IPixel {
+  r: number;
+  g: number;
+  b: number;
+}
+function renderPixels(): IPixel[]
+```
+
+_Arguments:_ none.
+
+_Returns:_ An array of `IPixels` representing the color set in 8-bit RGB format.
+
+### resetRendererClock()
+
+This method resets the renderer clock to 0.
+
+_Signature:_
+
+```typescript
+function resetRendererClock(): void
+```
+
+_Arguments:_ none.
+
+_Returns:_ none.
+
+### getRendererClock()
+
+Gets the current renderer clock, in milliseconds. This number is not relative to anything, and cannot be used to, e.g., get the wall time.
+
+_Signature:_
+
+```typescript
+function getRendererClock(): number
+```
+
+_Arguments:_ none.
+
+_Returns:_ The renderer clock as a `number`.
 
 ## Background
 

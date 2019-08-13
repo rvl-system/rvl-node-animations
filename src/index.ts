@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Raver Lights Node Animations.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { IWaveParameters, IWave, IWaveChannel } from 'rvl-node-types';
+import { IWaveParameters, IWave, IWaveChannel } from '../node_modules/rvl-node-types/declarations/index';
 
 const EMPTY_CHANNEL: IWaveChannel = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
 
@@ -38,18 +38,20 @@ let nWaves = 0;
 let nPixels = 0;
 let startTime = 0;
 let time = 0;
+let wParameters: IWaveParameters;
 
-export function initRenderer(numWaves: number, numPixels: number): void {
+export function initRenderer(waveParameters: IWaveParameters, numPixels: number, numWaves = 4): void {
   nWaves = numWaves;
   nPixels = numPixels;
+  wParameters = waveParameters;
   startTime = Date.now();
 }
 
-export function resetRendererClock() {
+export function resetRendererClock(): void {
   startTime = Date.now();
 }
 
-export function getRendererClock() {
+export function getRendererClock(): number {
   return time;
 }
 
@@ -80,20 +82,22 @@ function hsvToRgb(color: number[]): number[] {
 
 function calculatePixelValue(waveChannel: IWaveChannel, t: number, x: number): number {
   // Approximate 8-bit sin function from C++
-  const sin = 127.5 * (Math.sin(waveChannel.w_t * t / 100 + waveChannel.w_x * x + waveChannel.phi) + 1);
-  return Math.round(sin * waveChannel.a / 255 + waveChannel.b);
+  let sin = 2 * Math.PI * (waveChannel.w_t * t / 100 + waveChannel.w_x * x + waveChannel.phi) / 255;
+  sin = 127.5 * (Math.sin(sin) + 1);
+  sin = Math.round(sin * waveChannel.a / 255 + waveChannel.b);
+  return sin;
 }
 
-export function renderPixels(waveParameters: IWaveParameters): IPixel[] {
+export function renderPixels(): IPixel[] {
   if (!calculatePixelValue) {
     throw new Error('renderPixels called before init');
   }
   const animationClock = Date.now() - startTime;
-  if (!waveParameters.timePeriod) {
-    waveParameters.timePeriod = 255;
+  if (!wParameters.timePeriod) {
+    wParameters.timePeriod = 255;
   }
-  if (!waveParameters.distancePeriod) {
-    waveParameters.distancePeriod = 32;
+  if (!wParameters.distancePeriod) {
+    wParameters.distancePeriod = 32;
   }
   const colors: IColor[][] = [];
   time = animationClock % 25500;
@@ -101,8 +105,8 @@ export function renderPixels(waveParameters: IWaveParameters): IPixel[] {
     const pixelColorLayers: IColor[] = [];
 
     for (let j = 0; j < nWaves; j++) {
-      const x = Math.floor(255 * (i % waveParameters.distancePeriod) / waveParameters.distancePeriod);
-      const wave = waveParameters.waves[j];
+      const x = Math.floor(255 * (i % wParameters.distancePeriod) / wParameters.distancePeriod);
+      const wave = wParameters.waves[j];
       const pixelColor = hsvToRgb([
         calculatePixelValue(wave.h, time, x) / 255,
         calculatePixelValue(wave.s, time, x) / 255,
