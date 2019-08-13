@@ -1,3 +1,7 @@
+## 3.1.0 (2019-8-13)
+
+- Added rendering methods and removed the `clone-deep` dependency.
+
 ## 3.0.0 (2019-7-9)
 
 - Welp, that was a mistake. Turns out there were some edge cases in v2.0.0 I missed with brightness that caused flickering animations. I can't fix it with the current approach, so I'm taking brightness out for the time being
