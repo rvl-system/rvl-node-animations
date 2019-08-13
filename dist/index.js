@@ -1,3 +1,4 @@
+"use strict";
 /*
 Copyright (c) Bryan Hughes <bryan@nebri.us>
 
@@ -16,24 +17,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Raver Lights Node Animations.  If not, see <http://www.gnu.org/licenses/>.
 */
+Object.defineProperty(exports, "__esModule", { value: true });
 const EMPTY_CHANNEL = { a: 0, w_t: 0, w_x: 0, phi: 0, b: 0 };
 let nWaves = 0;
 let nPixels = 0;
 let startTime = 0;
 let time = 0;
 let wParameters;
-export function initRenderer(waveParameters, numPixels, numWaves = 4) {
+function initRenderer(waveParameters, numPixels, numWaves = 4) {
     nWaves = numWaves;
     nPixels = numPixels;
     wParameters = waveParameters;
     startTime = Date.now();
 }
-export function resetRendererClock() {
+exports.initRenderer = initRenderer;
+function resetRendererClock() {
     startTime = Date.now();
 }
-export function getRendererClock() {
+exports.resetRendererClock = resetRendererClock;
+function getRendererClock() {
     return time;
 }
+exports.getRendererClock = getRendererClock;
 // Modified from https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 function hsvToRgb(color) {
     const [h, s, v] = color;
@@ -74,7 +79,7 @@ function calculatePixelValue(waveChannel, t, x) {
     sin = Math.round(sin * waveChannel.a / 255 + waveChannel.b);
     return sin;
 }
-export function renderPixels() {
+function renderPixels() {
     if (!calculatePixelValue) {
         throw new Error('renderPixels called before init');
     }
@@ -126,7 +131,8 @@ export function renderPixels() {
         return pixel;
     });
 }
-export function createEmptyWave() {
+exports.renderPixels = renderPixels;
+function createEmptyWave() {
     return {
         h: { ...EMPTY_CHANNEL },
         s: { ...EMPTY_CHANNEL },
@@ -134,7 +140,8 @@ export function createEmptyWave() {
         a: { ...EMPTY_CHANNEL }
     };
 }
-export function createWaveParameters(wave1, wave2, wave3, wave4) {
+exports.createEmptyWave = createEmptyWave;
+function createWaveParameters(wave1, wave2, wave3, wave4) {
     return {
         waves: [
             wave1 || createEmptyWave(),
@@ -144,13 +151,14 @@ export function createWaveParameters(wave1, wave2, wave3, wave4) {
         ]
     };
 }
+exports.createWaveParameters = createWaveParameters;
 function validateNum(num, min, max, name) {
     if (typeof num !== 'number' || num < min || num > max) {
         throw new Error(`Invalid ${name} ${num}. ` +
             `${name[0].toUpperCase() + name.substring(1)} must be a number between ${min} and ${max}`);
     }
 }
-export function createSolidColorWave(h, s, a) {
+function createSolidColorWave(h, s, a) {
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
     validateNum(a, 0, 255, 'alpha');
@@ -161,7 +169,8 @@ export function createSolidColorWave(h, s, a) {
     wave.a.b = Math.round(a);
     return wave;
 }
-export function createColorCycleWave(rate, a) {
+exports.createSolidColorWave = createSolidColorWave;
+function createColorCycleWave(rate, a) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
@@ -173,7 +182,8 @@ export function createColorCycleWave(rate, a) {
     wave.a.b = Math.round(a);
     return wave;
 }
-export function createMovingWave(h, s, rate, spacing) {
+exports.createColorCycleWave = createColorCycleWave;
+function createMovingWave(h, s, rate, spacing) {
     validateNum(rate, 0, 32, 'rate');
     validateNum(spacing, 1, 16, 'spacing');
     validateNum(h, 0, 255, 'hue');
@@ -187,7 +197,8 @@ export function createMovingWave(h, s, rate, spacing) {
     wave.a.w_x = Math.round(spacing);
     return wave;
 }
-export function createPulsingWave(h, s, rate) {
+exports.createMovingWave = createMovingWave;
+function createPulsingWave(h, s, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(h, 0, 255, 'hue');
     validateNum(s, 0, 255, 'saturation');
@@ -199,7 +210,8 @@ export function createPulsingWave(h, s, rate) {
     wave.a.a = 255;
     return wave;
 }
-export function createRainbowWave(a, rate) {
+exports.createPulsingWave = createPulsingWave;
+function createRainbowWave(a, rate) {
     validateNum(rate, 1, 32, 'rate');
     validateNum(a, 0, 255, 'alpha');
     const wave = createEmptyWave();
@@ -211,4 +223,5 @@ export function createRainbowWave(a, rate) {
     wave.a.b = Math.round(a);
     return wave;
 }
+exports.createRainbowWave = createRainbowWave;
 //# sourceMappingURL=index.js.map

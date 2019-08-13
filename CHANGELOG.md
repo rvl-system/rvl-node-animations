@@ -1,4 +1,4 @@
-## 3.1.0 (2019-8-13)
+## 3.1.1 (2019-8-13)
 
 - Added rendering methods and removed the `clone-deep` dependency.
 
